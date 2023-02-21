@@ -133,6 +133,10 @@ func (qc *queryConfigStruct) transformQueryResult(columnTypes []*sql.ColumnType,
 	for i := 0; i < len(columnTypes); i++ {
 		log.DefaultLogger.Debug("Type", fmt.Sprintf("%T %v ", values[i], values[i]), columnTypes[i].DatabaseTypeName())
 
+		if values[i] == nil {
+			continue
+		}
+
 		// Convert time columns when query mode is time series
 		if qc.isTimeSeriesType() && equalsIgnoreCase(qc.TimeColumns, columnTypes[i].Name()) && reflect.TypeOf(values[i]) == reflect.TypeOf(str) {
 			if v, err := strconv.ParseFloat(values[i].(string), 64); err == nil {
